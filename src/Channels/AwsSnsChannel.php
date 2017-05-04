@@ -5,7 +5,7 @@ use Lab123\AwsSns\Exceptions\CouldNotSendNotification;
 use Illuminate\Notifications\Notification;
 use Aws\Sns\SnsClient;
 
-class AwsSnsSmsChannel
+class AwsSnsChannel
 {
 
     public function __construct(SnsClient $client)
@@ -23,7 +23,7 @@ class AwsSnsSmsChannel
      */
     public function send($notifiable, Notification $notification)
     {
-        $message = $notification->toAwsSnsSms($notifiable);
+        $message = $notification->toAwsSns($notifiable);
         $message->phoneNumber = ($message->phoneNumber) ?: $notifiable->routeNotificationFor('AwsSnsSms');
         
         if (! $message->phoneNumber || ! $message->message) {

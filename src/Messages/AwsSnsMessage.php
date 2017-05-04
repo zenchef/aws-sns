@@ -4,25 +4,50 @@ namespace Lab123\AwsSns\Messages;
 class AwsSnsMessage
 {
 
+    /**
+     * @var string
+     */
     public $topicArn = "";
 
+    /**
+     * @var string
+     */
+    public $targetArn = "";
+
+    /**
+     * @var string
+     */
     public $type = "";
 
+    /**
+     * @var string
+     */
     public $phoneNumber = "";
 
+    /**
+     * @var string
+     */
     public $endpoint = "";
 
+    /**
+     * @var string
+     */
     public $message = "";
 
+    /**
+     * @var string
+     */
     public $subject = "";
 
+    /**
+     * @var string
+     */
     public $messageStructure = "string";
 
     /**
      * Create a new message instance.
      *
-     * @param string $content            
-     * @return void
+     * @param string $message
      */
     public function __construct($message = '')
     {
@@ -32,20 +57,33 @@ class AwsSnsMessage
     /**
      * Set the topicArn.
      *
-     * @param string $topicArn            
+     * @param string $topicArn
      * @return $this
      */
     public function topicArn($topicArn)
     {
         $this->topicArn = $topicArn;
-        
+
+        return $this;
+    }
+
+    /**
+     * Set the targetArn.
+     *
+     * @param string $targetArn
+     * @return $this
+     */
+    public function targetArn($targetArn)
+    {
+        $this->targetArn = $targetArn;
+
         return $this;
     }
 
     /**
      * Set the Phone Number.
      *
-     * @param string $phoneNumber            
+     * @param string $phoneNumber
      * @return $this
      */
     public function phoneNumber($phoneNumber)
@@ -58,7 +96,7 @@ class AwsSnsMessage
     /**
      * Set the Type.
      *
-     * @param string $type            
+     * @param string $type
      * @return $this
      */
     public function type($type)
@@ -71,7 +109,7 @@ class AwsSnsMessage
     /**
      * Set the endpoint.
      *
-     * @param string $endpoint            
+     * @param string $endpoint
      * @return $this
      */
     public function endpoint($endpoint)
@@ -84,7 +122,7 @@ class AwsSnsMessage
     /**
      * Set the message content.
      *
-     * @param string $message            
+     * @param string $message
      * @return $this
      */
     public function message($message)
@@ -97,7 +135,7 @@ class AwsSnsMessage
     /**
      * Set the subject.
      *
-     * @param string $subject            
+     * @param string $subject
      * @return $this
      */
     public function subject($subject)
@@ -110,7 +148,7 @@ class AwsSnsMessage
     /**
      * Set the Message Structure.
      *
-     * @param string $messageStructure            
+     * @param string $messageStructure
      * @return $this
      */
     public function messageStructure($messageStructure)

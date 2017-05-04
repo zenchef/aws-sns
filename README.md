@@ -84,7 +84,7 @@ To send sms without the need to create a topic, leave the `function via` as foll
         ];
     }
 
-Add function `toAwsSnsSms()` expected by class `AwsSnsSmsChannel` to send notification:
+Add function `toAwsSns()` expected by class `AwsSnsChannel` to send notification:
 
 	// Notifications/Welcome.php
 	/**
@@ -93,7 +93,7 @@ Add function `toAwsSnsSms()` expected by class `AwsSnsSmsChannel` to send notifi
      * @param mixed $notifiable            
      * @return \Lab123\AwsSns\Messages\AwsSnsMessage
      */
-    public function toAwsSnsSms($notifiable)
+    public function toAwsSns($notifiable)
     {
         return (new AwsSnsMessage())->message('Message Here')->phoneNumber('+5511999999999');
     }

@@ -2,7 +2,7 @@
 namespace Lab123\AwsSns;
 
 use Lab123\AwsSns\Channels\AwsSnsTopicChannel;
-use Lab123\AwsSns\Channels\AwsSnsSmsChannel;
+use Lab123\AwsSns\Channels\AwsSnsChannel;
 use Illuminate\Support\ServiceProvider;
 use Aws\Sns\SnsClient;
 
@@ -14,7 +14,7 @@ class AwsSnsServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->when(AwsSnsSmsChannel::class)
+        $this->app->when(AwsSnsChannel::class)
             ->needs(SnsClient::class)
             ->give(function () {
             return $this->giveSnsInstance();

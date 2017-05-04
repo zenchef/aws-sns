@@ -24,17 +24,23 @@ class AwsSnsTopicChannel
     public function send($notifiable, Notification $notification)
     {
         $message = $notification->toAwsSnsTopic($notifiable);
-        $message->topicArn = ($message->topicArn) ?: $notifiable->routeNotificationFor('AwsSnsTopic');
-        
+
+        $data = [
+            'MessageStructure' => $message->messageStructure ?: 'string',
+            'Message' => $message->message
+        ];
+
+        if($message->topicArn || $notifiable->routeNotificationFor('AwsSnsTopic')) {
+            $data['TopicArn'] = ($message->topicArn) ?: $notifiable->routeNotificationFor('AwsSnsTopic');
+        }
+
+        if($message->targetArn || $notifiable->routeNotificationFor('AwsSnsTarget')) {
+            $data['TargetArn'] = ($message->targetArn) ?: $notifiable->routeNotificationFor('AwsSnsTarget');
+        }
+
         if (! $message->topicArn || ! $message->message) {
             return;
         }
-        
-        $data = [
-            'TopicArn' => $message->topicArn,
-            'MessageStructure' => $message->messageStructure,
-            'Message' => $message->message
-        ];
         
         $response = $this->client->publish($data);
         

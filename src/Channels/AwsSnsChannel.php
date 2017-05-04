@@ -16,30 +16,36 @@ class AwsSnsChannel
     /**
      * Send the given notification.
      *
-     * @param mixed $notifiable            
-     * @param \Illuminate\Notifications\Notification $notification            
+     * @param mixed $notifiable
+     * @param \Illuminate\Notifications\Notification $notification
      *
      * @throws \Lab123\AwsSns\Exceptions\CouldNotSendNotification
      */
     public function send($notifiable, Notification $notification)
     {
         $message = $notification->toAwsSns($notifiable);
-        $message->phoneNumber = ($message->phoneNumber) ?: $notifiable->routeNotificationFor('AwsSnsSms');
-        
-        if (! $message->phoneNumber || ! $message->message) {
-            return;
-        }
-        
+
         $data = [
-            'PhoneNumber' => $message->phoneNumber,
-            'MessageStructure' => $message->messageStructure,
+            'MessageStructure' => $message->messageStructure ?: 'string',
             'Message' => $message->message
         ];
-        
+
+        if($message->topicArn || $notifiable->routeNotificationFor('AwsSnsTopic')) {
+            $data['TopicArn'] = ($message->topicArn) ?: $notifiable->routeNotificationFor('AwsSnsTopic');
+        }
+
+        if($message->targetArn || $notifiable->routeNotificationFor('AwsSnsTarget')) {
+            $data['TargetArn'] = ($message->targetArn) ?: $notifiable->routeNotificationFor('AwsSnsTarget');
+        }
+
+        if ((! $message->topicArn && ! $message->targetArn) || ! $message->message) {
+            return;
+        }
+
         $response = $this->client->publish($data);
-        
+
         $response = $response->toArray();
-        
+
         if ($response["@metadata"]["statusCode"] != 200) {
             throw CouldNotSendNotification::serviceRespondedWithAnError();
         }

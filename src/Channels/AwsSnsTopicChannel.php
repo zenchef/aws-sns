@@ -16,8 +16,8 @@ class AwsSnsTopicChannel
     /**
      * Send the given notification.
      *
-     * @param mixed $notifiable            
-     * @param \Illuminate\Notifications\Notification $notification            
+     * @param mixed $notifiable
+     * @param \Illuminate\Notifications\Notification $notification
      *
      * @throws \Lab123\AwsSns\Exceptions\CouldNotSendNotification
      */
@@ -38,14 +38,14 @@ class AwsSnsTopicChannel
             $data['TargetArn'] = ($message->targetArn) ?: $notifiable->routeNotificationFor('AwsSnsTarget');
         }
 
-        if (! $message->topicArn || ! $message->message) {
+        if ((! $message->topicArn && ! $message->targetArn) || ! $message->message) {
             return;
         }
-        
+
         $response = $this->client->publish($data);
-        
+
         $response = $response->toArray();
-        
+
         if ($response["@metadata"]["statusCode"] != 200) {
             throw CouldNotSendNotification::serviceRespondedWithAnError();
         }

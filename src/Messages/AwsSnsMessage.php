@@ -89,7 +89,7 @@ class AwsSnsMessage
     public function phoneNumber($phoneNumber)
     {
         $this->phoneNumber = $phoneNumber;
-        
+
         return $this;
     }
 
@@ -102,7 +102,7 @@ class AwsSnsMessage
     public function type($type)
     {
         $this->type = $type;
-        
+
         return $this;
     }
 
@@ -115,7 +115,7 @@ class AwsSnsMessage
     public function endpoint($endpoint)
     {
         $this->endpoint = $endpoint;
-        
+
         return $this;
     }
 
@@ -128,7 +128,7 @@ class AwsSnsMessage
     public function message($message)
     {
         $this->message = $message;
-        
+
         return $this;
     }
 
@@ -141,7 +141,7 @@ class AwsSnsMessage
     public function subject($subject)
     {
         $this->subject = $subject;
-        
+
         return $this;
     }
 
@@ -154,7 +154,7 @@ class AwsSnsMessage
     public function messageStructure($messageStructure)
     {
         $this->messageStructure = $messageStructure;
-        
+
         return $this;
     }
 }

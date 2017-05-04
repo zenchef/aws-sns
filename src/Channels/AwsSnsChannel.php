@@ -24,24 +24,44 @@ class AwsSnsChannel
     public function send($notifiable, Notification $notification)
     {
         $message = $notification->toAwsSns($notifiable);
+        $targets = [];
+        $topics = [];
 
         $data = [
             'MessageStructure' => $message->messageStructure ?: 'string',
             'Message' => $message->message
         ];
 
-        if($message->topicArn || $notifiable->routeNotificationFor('AwsSnsTopic')) {
-            $data['TopicArn'] = ($message->topicArn) ?: $notifiable->routeNotificationFor('AwsSnsTopic');
+        if ($message->topicArn || $notifiable->routeNotificationFor('AwsSnsTopic')) {
+            $topics = ($message->topicArn) ?: $notifiable->routeNotificationFor('AwsSnsTopic');
+            $topics = is_array($topics) ? $topics : [$topics];
         }
 
-        if($message->targetArn || $notifiable->routeNotificationFor('AwsSnsTarget')) {
-            $data['TargetArn'] = ($message->targetArn) ?: $notifiable->routeNotificationFor('AwsSnsTarget');
+        if ($message->targetArn || $notifiable->routeNotificationFor('AwsSnsTarget')) {
+            $targets = ($message->targetArn) ?: $notifiable->routeNotificationFor('AwsSnsTarget');
+            $targets = is_array($targets) ? $targets : [$targets];
         }
 
-        if ((! $message->topicArn && ! $message->targetArn) || ! $message->message) {
+        if ((!sizeof($targets) && !sizeof($topics)) || !$message->message) {
             return;
         }
 
+        foreach ($targets as $target) {
+            $this->call(array_merge($data, ['TargetArn' => $target]));
+        }
+
+        foreach ($topics as $topic) {
+            $this->call(array_merge($data, ['TopicArn' => $topic]));
+        }
+    }
+
+    /**
+     * @param $data
+     *
+     * @throws CouldNotSendNotification
+     */
+    private function call($data)
+    {
         $response = $this->client->publish($data);
 
         $response = $response->toArray();

@@ -4,6 +4,9 @@ namespace Lab123\AwsSns\Messages;
 class AwsSnsMessage
 {
 
+    const STRUCTURE_JSON = 'json';
+    const STRUCTURE_STRING = 'string';
+
     /**
      * @var string
      */
@@ -57,7 +60,7 @@ class AwsSnsMessage
     /**
      * Set the topicArn.
      *
-     * @param string $topicArn
+     * @param string|array $topicArn
      * @return $this
      */
     public function topicArn($topicArn)
@@ -153,8 +156,23 @@ class AwsSnsMessage
      */
     public function messageStructure($messageStructure)
     {
-        $this->messageStructure = $messageStructure;
+        $this->messageStructure = in_array($messageStructure, [self::STRUCTURE_JSON, self::STRUCTURE_STRING]) ? $messageStructure : self::STRUCTURE_STRING;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessage()
+    {
+        switch($this->messageStructure) {
+            case self::STRUCTURE_JSON :
+                return json_encode(["default" => "Zenchef notification", "APNS" => json_encode($this->message), "APNS_SANDBOX" => json_encode($this->message)]);
+                break;
+            default:
+                return $this->message;
+                break;
+        }
     }
 }

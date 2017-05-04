@@ -29,7 +29,7 @@ class AwsSnsChannel
 
         $data = [
             'MessageStructure' => $message->messageStructure ?: 'string',
-            'Message' => $message->message
+            'Message' => $message->getMessage()
         ];
 
         if ($message->topicArn || $notifiable->routeNotificationFor('AwsSnsTopic')) {

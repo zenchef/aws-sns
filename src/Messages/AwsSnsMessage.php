@@ -10,7 +10,17 @@ class AwsSnsMessage
     /**
      * @var string
      */
+    public $default = "Zenchef notification";
+
+    /**
+     * @var string
+     */
     public $topicArn = "";
+
+    /**
+     * @var array
+     */
+    public $metadata = [];
 
     /**
      * @var string
@@ -25,12 +35,12 @@ class AwsSnsMessage
     /**
      * @var string
      */
-    public $phoneNumber = "";
+    public $endpoint = "";
 
     /**
      * @var string
      */
-    public $endpoint = "";
+    public $category = "";
 
     /**
      * @var string
@@ -61,6 +71,7 @@ class AwsSnsMessage
      * Set the topicArn.
      *
      * @param string|array $topicArn
+     *
      * @return $this
      */
     public function topicArn($topicArn)
@@ -74,6 +85,7 @@ class AwsSnsMessage
      * Set the targetArn.
      *
      * @param string $targetArn
+     *
      * @return $this
      */
     public function targetArn($targetArn)
@@ -84,22 +96,10 @@ class AwsSnsMessage
     }
 
     /**
-     * Set the Phone Number.
-     *
-     * @param string $phoneNumber
-     * @return $this
-     */
-    public function phoneNumber($phoneNumber)
-    {
-        $this->phoneNumber = $phoneNumber;
-
-        return $this;
-    }
-
-    /**
      * Set the Type.
      *
      * @param string $type
+     *
      * @return $this
      */
     public function type($type)
@@ -110,9 +110,39 @@ class AwsSnsMessage
     }
 
     /**
+     * Set the Type.
+     *
+     * @param string $key
+     * @param mixed $val
+     *
+     * @return $this
+     */
+    public function metadata($key, $val)
+    {
+        $this->metadata[$key] = $val;
+
+        return $this;
+    }
+
+    /**
+     * Set the endpoint.
+     *
+     * @param string $category
+     *
+     * @return $this
+     */
+    public function category($category)
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    /**
      * Set the endpoint.
      *
      * @param string $endpoint
+     *
      * @return $this
      */
     public function endpoint($endpoint)
@@ -126,6 +156,7 @@ class AwsSnsMessage
      * Set the message content.
      *
      * @param string $message
+     *
      * @return $this
      */
     public function message($message)
@@ -139,6 +170,7 @@ class AwsSnsMessage
      * Set the subject.
      *
      * @param string $subject
+     *
      * @return $this
      */
     public function subject($subject)
@@ -149,9 +181,58 @@ class AwsSnsMessage
     }
 
     /**
+     * APNS message formatted
+     *
+     * @return $this
+     */
+    private function APNSMessage()
+    {
+        return json_encode([
+            "aps" => [
+                "alert" => [
+                    "body" => $this->message
+                ],
+                "badge" => 1,
+                "category" => $this->category,
+                "metadata" => $this->metadata
+            ]
+        ]);
+    }
+
+    /**
+     * APNS message formatted
+     *
+     * @return $this
+     */
+    private function APNSSandboxMessage()
+    {
+        return $this->APNSMessage();
+    }
+
+    /**
+     * GCM message formatted
+     *
+     * @return $this
+     */
+    private function GCMMessage()
+    {
+        return json_encode([
+            "notification" => [
+                "text" => $this->message,
+                "data" => [
+                    "category" => $this->category,
+                    "metadata" => $this->metadata
+                ]
+            ]
+        ]);
+    }
+
+
+    /**
      * Set the Message Structure.
      *
      * @param string $messageStructure
+     *
      * @return $this
      */
     public function messageStructure($messageStructure)
@@ -166,9 +247,14 @@ class AwsSnsMessage
      */
     public function getMessage()
     {
-        switch($this->messageStructure) {
+        switch ($this->messageStructure) {
             case self::STRUCTURE_JSON :
-                return json_encode(["default" => "Zenchef notification", "APNS" => json_encode($this->message), "APNS_SANDBOX" => json_encode($this->message)]);
+                return json_encode([
+                    "default" => $this->default,
+                    "APNS" => $this->APNSMessage(),
+                    "APNS_SANDBOX" => $this->APNSSandboxMessage(),
+                    "GCM" => $this->GCMMessage()
+                ]);
                 break;
             default:
                 return $this->message;

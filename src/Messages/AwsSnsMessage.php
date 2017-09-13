@@ -218,11 +218,12 @@ class AwsSnsMessage
     {
         return json_encode([
             "notification" => [
-                "text" => $this->message,
-                "data" => [
-                    "category" => $this->category,
-                    "metadata" => $this->metadata
-                ]
+//                "title" => $this->default,
+                "text" => $this->message
+            ],
+            "data" => [
+                "category" => $this->category,
+                "metadata" => $this->metadata
             ]
         ]);
     }

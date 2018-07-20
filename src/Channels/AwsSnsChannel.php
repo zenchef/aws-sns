@@ -27,6 +27,10 @@ class AwsSnsChannel
         $targets = [];
         $topics = [];
 
+        if(!$message) { // no message
+            return ;
+        }
+        
         $data = [
             'MessageStructure' => $message->messageStructure ?: 'string',
             'Message' => $message->getMessage()

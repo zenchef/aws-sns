@@ -66,7 +66,14 @@ class AwsSnsChannel
      */
     private function call($data)
     {
-        $response = $this->client->publish($data);
+        try {
+            $response = $this->client->publish($data);
+        } catch (SnsException $e) {
+            if (isset($data['TargetArn'])) {
+                $e->TargetArn = $data['TargetArn'];
+            }
+            throw $e;
+        }
 
         $response = $response->toArray();
 

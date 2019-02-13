@@ -4,6 +4,7 @@ namespace Lab123\AwsSns\Channels;
 use Lab123\AwsSns\Exceptions\CouldNotSendNotification;
 use Illuminate\Notifications\Notification;
 use Aws\Sns\SnsClient;
+use Aws\Sns\Exception\SnsException;
 
 class AwsSnsChannel
 {

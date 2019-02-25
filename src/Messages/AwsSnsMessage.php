@@ -58,6 +58,16 @@ class AwsSnsMessage
     public $messageStructure = "string";
 
     /**
+     * @var int
+     */
+    public $badge = 1;
+
+    /**
+     * @var string
+     */
+    public $sound = "";
+
+    /**
      * Create a new message instance.
      *
      * @param string $message
@@ -181,6 +191,30 @@ class AwsSnsMessage
     }
 
     /**
+     * Set the badge
+     *
+     * @param $badge
+     * @return $this
+     */
+    public function badge($badge)
+    {
+        $this->badge = $badge;
+
+        return $this;
+    }
+
+    /**
+     * @param $sound
+     * @return $this
+     */
+    public function sound($sound)
+    {
+        $this->sound = $sound;
+
+        return $this;
+    }
+
+    /**
      * APNS message formatted
      *
      * @return $this
@@ -190,7 +224,8 @@ class AwsSnsMessage
         return json_encode([
             "aps" => [
                 "alert" => $this->message,
-                "badge" => 1,
+                "badge" => $this->badge,
+                "sound" => $this->sound,
                 "category" => $this->category,
                 "metadata" => $this->metadata
             ]

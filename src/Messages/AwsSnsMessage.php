@@ -1,4 +1,5 @@
 <?php
+
 namespace Lab123\AwsSns\Messages;
 
 class AwsSnsMessage
@@ -226,6 +227,7 @@ class AwsSnsMessage
                 "alert" => $this->message,
                 "badge" => $this->badge,
                 "sound" => $this->sound,
+                "mutable-content" => 1,
                 "category" => $this->category,
                 "metadata" => $this->metadata
             ]

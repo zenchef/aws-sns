@@ -224,7 +224,10 @@ class AwsSnsMessage
     {
         return json_encode([
             "aps" => [
-                "alert" => $this->message,
+                "alert" => [
+                    "title"=> $this->subject,
+                    "body" => $this->message
+                ],
                 "badge" => $this->badge,
                 "sound" => $this->sound,
                 "mutable-content" => 1,

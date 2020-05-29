@@ -4,7 +4,6 @@ namespace Lab123\AwsSns\Channels;
 use Lab123\AwsSns\Exceptions\CouldNotSendNotification;
 use Illuminate\Notifications\Notification;
 use Aws\Sns\SnsClient;
-use Aws\Sns\Exception\SnsException;
 
 class AwsSnsChannel
 {
@@ -31,7 +30,7 @@ class AwsSnsChannel
         if(!$message) { // no message
             return ;
         }
-        
+
         $data = [
             'MessageStructure' => $message->messageStructure ?: 'string',
             'Message' => $message->getMessage()
@@ -69,7 +68,7 @@ class AwsSnsChannel
     {
         try {
             $response = $this->client->publish($data);
-        } catch (SnsException $e) {
+        } catch (\Exception $e) {
             if (isset($data['TargetArn'])) {
                 $e->TargetArn = $data['TargetArn'];
             }

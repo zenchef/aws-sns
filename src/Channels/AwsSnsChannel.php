@@ -4,6 +4,7 @@ namespace Lab123\AwsSns\Channels;
 use Lab123\AwsSns\Exceptions\CouldNotSendNotification;
 use Illuminate\Notifications\Notification;
 use Aws\Sns\SnsClient;
+use Throwable;
 
 class AwsSnsChannel
 {
@@ -17,9 +18,10 @@ class AwsSnsChannel
      * Send the given notification.
      *
      * @param mixed $notifiable
-     * @param \Illuminate\Notifications\Notification $notification
+     * @param Notification $notification
      *
-     * @throws \Lab123\AwsSns\Exceptions\CouldNotSendNotification
+     * @throws CouldNotSendNotification
+     * @throws Throwable
      */
     public function send($notifiable, Notification $notification)
     {
@@ -63,12 +65,13 @@ class AwsSnsChannel
      * @param $data
      *
      * @throws CouldNotSendNotification
+     * @throws Throwable
      */
     private function call($data)
     {
         try {
             $response = $this->client->publish($data);
-        } catch (\Exception $e) {
+        } catch (Throwable $e) {
             if (isset($data['TargetArn'])) {
                 $e->TargetArn = $data['TargetArn'];
             }

@@ -256,7 +256,7 @@ class AwsSnsMessage
     {
         return json_encode([
             "notification" => [
-                "title" => $this->default,
+                "title" => $this->subject ?: $this->default,
                 "text" => $this->message
             ],
             "data" => [

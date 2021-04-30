@@ -1,6 +1,7 @@
 <?php
 namespace Lab123\AwsSns;
 
+use Factories\Libraries\SnsServices;
 use Lab123\AwsSns\Channels\AwsSnsTopicChannel;
 use Lab123\AwsSns\Channels\AwsSnsChannel;
 use Illuminate\Support\ServiceProvider;
@@ -45,5 +46,9 @@ class AwsSnsServiceProvider extends ServiceProvider
      * Register the application services.
      */
     public function register()
-    {}
+    {
+        $this->app->singleton('sns', function () {
+            return new SnsServices($this->giveSnsInstance());
+        });
+    }
 }
